@@ -46,22 +46,32 @@ def score():
             print(batters)
         except:
             print("An exception occurred fetching either batters or bowler")
+        try:
+            txt=bowler+" "+batters
+            iurl='https://maker.ifttt.com/trigger/CricketScore/with/key/H9qCqfSIfI2WiwXhF2zZz?value1='+detailed_score+'&value2='+txt
+            requests.get(iurl)
+        except:
+            print("An exception occurred fetching either batters or bowler")
+
         try:    
             if (over==(config.tover-1.0+0.5)):
                 bow=bowler
             if over==config.tover:
-                print("notified")
-                msg = series_name+"\n"+ detailed_score+" " + bow + "\n" + batters +"\n"+ data['prev_overs']
+                msg = 'hi'#detailed_score+" " + bow + "\n" + batters +"\n"+ data['prev_overs']
                 print(msg)
                 fbpush(msg)
                 notify(msg)
                 config.tover=config.tover+1
+                iurl='https://maker.ifttt.com/trigger/CricketScore/with/key/H9qCqfSIfI2WiwXhF2zZz?value1='+msg
+                requests.get(iurl)
                 time.sleep(15)
             if wicket==config.twicket:
-                msg=series_name+"\n"+"wicket "+str(twicket)+" "+data['last_wkt_name']+" "+data['last_wkt_score']+" B: "+bowler+"\n"+detailed_score
+                msg=data['last_wkt_name']+" "+data['last_wkt_score']+" B: "+bowler+"\n"+detailed_score
                 fbpush(msg)
                 notify(msg)
                 config.twicket=config.twicket+1
+                iurl='https://maker.ifttt.com/trigger/CricketScore/with/key/H9qCqfSIfI2WiwXhF2zZz?value1='+msg
+                requests.get(iurl)
                 time.sleep(15)
         except:
             print("An exception occurred while trying to notify")
@@ -75,19 +85,21 @@ def notify(msg):
     #TelegramChannel chatId -1001181667975
     url='https://api.telegram.org/bot879982304:AAHG7ZRyEMWoQB-ToaiJBv_gMvkW-ekJcSg/sendMessage?chat_id=-1001181667975&text='+msg
     requests.get(url)
+    print("notified")
 
 def main():   
     mid=listOfMatches()
     mid=input('Enter mid..\n')
-    print(mid)
     while(mid==None or mid==''):
         print(".")
         if mid=='':
             print("Automatically fetching")
             mid=listOfMatches()
-            if mid==None:
-                mid=input('Enter mid..\n')
-               
+        elif mid==None:
+            mid=input('Enter mid..\n')
+        else:
+            mid=''
+
 
     print(mid)
     config.ur='http://mapps.cricbuzz.com/cbzios/match/'+mid+'/leanback.json'
