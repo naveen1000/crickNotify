@@ -55,9 +55,10 @@ def score():
 
         try:    
             if (over==(config.tover-1.0+0.5)):
-                bow=bowler
+                global bow 
+                bow = bowler
             if over==config.tover:
-                msg = 'hi'#detailed_score+" " + bow + "\n" + batters +"\n"+ data['prev_overs']
+                msg = detailed_score+" " + bow + "\n" + batters +"\n"+ data['prev_overs']
                 print(msg)
                 fbpush(msg)
                 notify(msg)
@@ -107,7 +108,7 @@ def main():
     while(True):
         score()
         time.sleep(5)
-
+bow=''
 main()
 
 
